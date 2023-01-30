@@ -21,12 +21,15 @@ window.onload = function() {
     // Get the project data from the database
     db.collection("projects").doc(projectId).get()
     .then(doc => {
+        console.log(doc.data());
         let title = doc.data().title;
-        let description = doc.data().description;
+        let images = doc.data().img;
+        let descriptions = doc.data().descriptions;
         let tagList = doc.data().tags;
         let tags = "";
-        let projectImage1 = doc.data().img1;
-        let projectImage2 = doc.data().img2;
+
+        let descriptionCount = doc.data().descriptions.length;
+        let imageCount = doc.data().img.length;
 
         tagList.forEach(tag => {
             tags += `<p>${tag}</p>`;
@@ -34,10 +37,36 @@ window.onload = function() {
 
         document.getElementById("projectTitle").innerHTML = title;
         document.title = `${title} | Stef Schalks`;
-        document.getElementById("projectDescription").innerHTML = description;
+        document.getElementById("project-description-intro").innerHTML = descriptions[0]['en'];
         document.getElementById("tags").innerHTML = tags;
-        document.getElementById("img1").src = projectImage1;
-        document.getElementById("img2").src = projectImage2;
+
+        if (descriptionCount - 1 == imageCount) {
+            for (let i = 0; i < descriptionCount; i++) {
+                let description = descriptions[i + 1]['en'];
+                let image = images[i];
+
+                let container = document.createElement("div");
+                container.classList.add("project-content-container");
+
+                let descriptionElement = document.createElement("p");
+                descriptionElement.innerHTML = description;
+
+                let imageElement = document.createElement("img");
+                imageElement.src = image;
+
+                if (i % 2 == 0) {
+                    container.appendChild(imageElement);
+                    container.appendChild(descriptionElement);
+
+                    document.getElementById("project-content").appendChild(container);
+                } else {
+                    container.appendChild(descriptionElement);
+                    container.appendChild(imageElement);
+
+                    document.getElementById("project-content").appendChild(container);
+                }
+            }
+        }
 
     });
 }

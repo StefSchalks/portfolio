@@ -18,9 +18,9 @@ window.onload = function() {
     db.collection("projects").get().then(documents => {
         documents.forEach(doc => {
             let title = doc.data().title;
-            let description = doc.data().description;
+            let description = doc.data().overview_description;
             let tagList = doc.data().tags;
-            let imgthumbnail = doc.data().img1;
+            let imgthumbnail = doc.data().img[0];
             let tags = "";
 
             tagList.forEach(tag => {
